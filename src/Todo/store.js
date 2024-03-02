@@ -61,5 +61,5 @@ export const useTodoStore = () => {
   useEffect(() => {
     return subscribe(setState)
   }, [])
-  return useMemo(() => ({ state, store }), [state])
+  return useMemo(() => ({ state, ...store }), [state])
 }

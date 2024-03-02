@@ -8,6 +8,7 @@ import { getLocalStorage, addLocalStorage, removeLocalStorage, updateLocalStorag
  */
 
 const REQUEST_PATH = '/apis/todos'
+const DELAY_TIME = 500
 
 /**
  * @returns {Promise<Todo[]>}
@@ -16,7 +17,7 @@ export const fetchTodoList = () => {
   return new Promise((resolve) => {
     setTimeout(() => {
       resolve(getLocalStorage(REQUEST_PATH));
-    }, 500);
+    }, DELAY_TIME);
   })
 }
 
@@ -28,7 +29,7 @@ export const fetchCreateTodo = (todo) => {
   return new Promise((resolve) => {
     setTimeout(() => {
       resolve(addLocalStorage(REQUEST_PATH, todo));
-    }, 500);
+    }, DELAY_TIME);
   })
 }
 
@@ -40,7 +41,7 @@ export const fetchDeleteTodo = (id) => {
   return new Promise((resolve) => {
     setTimeout(() => {
       resolve(removeLocalStorage(REQUEST_PATH, id));
-    }, 500);
+    }, DELAY_TIME);
   })
 }
 
@@ -52,6 +53,6 @@ export const fetchUpdateTodo = (todo) => {
   return new Promise((resolve) => {
     setTimeout(() => {
       resolve(updateLocalStorage(REQUEST_PATH, todo.id, todo));
-    }, 500);
+    }, DELAY_TIME);
   })
 }
