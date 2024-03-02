@@ -26,8 +26,8 @@ function TodoView({ todos, isLoading, errorInfo }) {
   const render = cond([
     [() => !todos && isLoading, () => <div>Loading...</div>],
     [() => errorInfo instanceof Error, (error) => <div>Error: {error}</div>],
+    [() => todos?.length === 0, () => <div>Empty!!!</div>],
     [() => Boolean(todos?.length), () => <TodoList todos={todos} />],
-    [() => todos?.length === 0, () => <div>Empty</div>],
     [() => true, () => null],
   ]);
   return (

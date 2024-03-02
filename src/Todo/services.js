@@ -7,25 +7,7 @@ import { getLocalStorage, addLocalStorage, removeLocalStorage, updateLocalStorag
  * @property {boolean} completed
  */
 
-const REQUEST_PATH = '/api/todos'
-
-localStorage.setItem(REQUEST_PATH, JSON.stringify([
-  {
-    id: '1',
-    text: 'Buy groceries',
-    completed: false,
-  },
-  {
-    id: '2',
-    text: 'Do laundry',
-    completed: false,
-  },
-  {
-    id: '3',
-    text: 'Study',
-    completed: false,
-  },
-]))
+const REQUEST_PATH = '/apis/todos'
 
 /**
  * @returns {Promise<Todo[]>}

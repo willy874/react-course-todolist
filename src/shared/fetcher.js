@@ -36,6 +36,7 @@ export const useFetcher = (query, fetcher, options = {}) => {
         .then(data => {
           if (cancel) return
           setData(data)
+          setError(null)
           onLoadRef.current?.(query, data)
         })
         .catch(error => {
@@ -57,6 +58,7 @@ export const useFetcher = (query, fetcher, options = {}) => {
     setLoading(true)
     fetcherRef.current(query)
       .then(data => {
+        setError(null)
         setData(data)
         onLoadRef.current?.(query, data)
       })

@@ -20,14 +20,17 @@ function TodoForm() {
     setValue("");
   };
   return (
-    <form onSubmit={onSubmit}>
-      <input
-        type="text"
-        className="input"
-        value={value}
-        onChange={(e) => setValue(e.target.value)}
-      />
-    </form>
+    <div>
+      <h2>Add Todo</h2>
+      <form onSubmit={onSubmit}>
+        <input
+          type="text"
+          className="input"
+          value={value}
+          onChange={(e) => setValue(e.target.value)}
+        />
+      </form>
+    </div>
   );
 }
 

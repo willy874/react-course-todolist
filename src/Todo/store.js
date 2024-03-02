@@ -48,7 +48,8 @@ const updateTodo = (todo) => {
   return fetchUpdateTodo(todo);
 }
 
-export const store = {
+const store = {
+  getTodos: getState,
   setTodos,
   fetchTodo,
   removeTodo,
@@ -56,14 +57,7 @@ export const store = {
   updateTodo
 }
 
-/**
- * @returns {[
- * Todo[] | null,
- * (value: ((state: Todo[] | null) => (Todo[] | null))) => void,
- * (listener: (state: Todo[] | null) => void) => void
- * ]}
- */
 export const useTodos = () => {
   useFocusUpdate(subscribe)
-  return [getState(), dispatch, subscribe]
+  return store
 }

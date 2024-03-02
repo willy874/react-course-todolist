@@ -1,13 +1,14 @@
 /** @typedef {import('./TodoView').TodoViewProps} TodoViewProps */
 import { useEffect, useReducer } from "react";
-import { useTodos, store } from "./store";
+import { useTodos } from "./store";
 import { todoEmitter } from "./event";
 import { useFetcher } from "../shared/fetcher";
 import { queueReducer } from "../shared/utils";
 import TodoView from "./TodoView";
 
 export default function TodoContainer() {
-  const [todos] = useTodos();
+  const { getTodos, setTodos, fetchTodo, removeTodo, addTodo, updateTodo } =
+    useTodos();
   const [loadingQueue, loadingQueueDispatch] = useReducer(
     queueReducer,
     new Set()
@@ -16,56 +17,55 @@ export default function TodoContainer() {
     queueReducer,
     new Set()
   );
-  const { mutate, isLoading, error } = useFetcher("", store.fetchTodo, {
-    onLoad: (_, data) => {
-      todoEmitter.emit(todoEmitter.FETCHED, data);
+  const { mutate, isLoading, error } = useFetcher("", fetchTodo, {
+    onLoad: (_req, res) => {
+      todoEmitter.emit(todoEmitter.FETCHED, res);
     },
     onError: (error) => {
       todoEmitter.emit(todoEmitter.ERROR, error);
     },
   });
   useEffect(() => {
+    return todoEmitter.on(todoEmitter.EFFECT, mutate);
+  }, [mutate]);
+  useEffect(() => {
     return todoEmitter.on(todoEmitter.FETCHED, (todos) => {
-      store.setTodos(todos);
+      setTodos(todos);
       refreshQueueDispatch({ type: "clear" });
     });
-  }, []);
+  }, [setTodos]);
   useEffect(() => {
     return todoEmitter.on(todoEmitter.REQUEST_ADD, (todo) => {
       loadingQueueDispatch({ type: "add", payload: todo.id });
-      store.addTodo(todo).then(() => {
+      addTodo(todo).then(() => {
         loadingQueueDispatch({ type: "delete", payload: todo.id });
         refreshQueueDispatch({ type: "add", payload: todo.id });
         todoEmitter.emit(todoEmitter.EFFECT);
       });
     });
-  }, []);
+  }, [addTodo]);
   useEffect(() => {
     return todoEmitter.on(todoEmitter.REQUEST_REMOVE, (id) => {
       loadingQueueDispatch({ type: "add", payload: id });
-      store.removeTodo(id).then(() => {
+      removeTodo(id).then(() => {
         loadingQueueDispatch({ type: "delete", payload: id });
         refreshQueueDispatch({ type: "add", payload: id });
         todoEmitter.emit(todoEmitter.EFFECT);
       });
     });
-  }, []);
+  }, [removeTodo]);
   useEffect(() => {
     return todoEmitter.on(todoEmitter.REQUEST_UPDATE, (todo) => {
       loadingQueueDispatch({ type: "add", payload: todo.id });
-      store.updateTodo(todo).then(() => {
+      updateTodo(todo).then(() => {
         loadingQueueDispatch({ type: "delete", payload: todo.id });
         refreshQueueDispatch({ type: "add", payload: todo.id });
         todoEmitter.emit(todoEmitter.EFFECT);
       });
     });
-  }, []);
-  useEffect(() => {
-    return todoEmitter.on(todoEmitter.EFFECT, mutate);
-  }, [mutate]);
-  /** @type {TodoViewProps['todos']} */
-  const viewTodos =
-    todos?.map((todo) => ({
+  }, [updateTodo]);
+  const todos =
+    getTodos()?.map((todo) => ({
       id: todo.id,
       text: todo.text,
       completed: todo.completed,
@@ -73,7 +73,7 @@ export default function TodoContainer() {
     })) || null;
   /** @type {TodoViewProps} */
   const props = {
-    todos: viewTodos,
+    todos,
     isLoading,
     errorInfo: error,
   };
