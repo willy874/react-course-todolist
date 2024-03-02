@@ -1,6 +1,6 @@
 /** @typedef {import('./services').Todo} Todo */
+import { useEffect, useMemo, useState } from "react";
 import { createStore } from "../shared/store";
-import { useFocusUpdate } from "../shared/hooks";
 import { fetchTodoList, fetchCreateTodo, fetchDeleteTodo, fetchUpdateTodo } from "./services";
 
 /** @type {() => (Todo[] | null)} */
@@ -49,7 +49,6 @@ const updateTodo = (todo) => {
 }
 
 const store = {
-  getTodos: getState,
   setTodos,
   fetchTodo,
   removeTodo,
@@ -57,7 +56,10 @@ const store = {
   updateTodo
 }
 
-export const useTodos = () => {
-  useFocusUpdate(subscribe)
-  return store
+export const useTodoStore = () => {
+  const [state, setState] = useState(getState)
+  useEffect(() => {
+    return subscribe(setState)
+  }, [])
+  return useMemo(() => ({ state, store }), [state])
 }

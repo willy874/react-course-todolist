@@ -1,14 +1,14 @@
 /** @typedef {import('./TodoView').TodoViewProps} TodoViewProps */
 import { useEffect, useReducer } from "react";
-import { useTodos } from "./store";
-import { todoEmitter } from "./event";
 import { useFetcher } from "../shared/fetcher";
 import { queueReducer } from "../shared/utils";
+import { useTodoStore } from "./store";
+import { todoEmitter } from "./event";
 import TodoView from "./TodoView";
 
 export default function TodoContainer() {
-  const { getTodos, setTodos, fetchTodo, removeTodo, addTodo, updateTodo } =
-    useTodos();
+  const { state, setTodos, fetchTodo, removeTodo, addTodo, updateTodo } =
+    useTodoStore();
   const [loadingQueue, loadingQueueDispatch] = useReducer(
     queueReducer,
     new Set()
@@ -65,7 +65,7 @@ export default function TodoContainer() {
     });
   }, [updateTodo]);
   const todos =
-    getTodos()?.map((todo) => ({
+    state?.map((todo) => ({
       id: todo.id,
       text: todo.text,
       completed: todo.completed,
