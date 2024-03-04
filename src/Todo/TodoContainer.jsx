@@ -36,10 +36,7 @@ export default function TodoContainer() {
   }, [setTodos]);
   useEffect(() => {
     return todoEmitter.on(todoEmitter.REQUEST_ADD, (todo) => {
-      loadingQueueDispatch({ type: "add", payload: todo.id });
       addTodo(todo).then(() => {
-        loadingQueueDispatch({ type: "delete", payload: todo.id });
-        refreshQueueDispatch({ type: "add", payload: todo.id });
         todoEmitter.emit(todoEmitter.EFFECT);
       });
     });
